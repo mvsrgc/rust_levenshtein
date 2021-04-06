@@ -4,8 +4,6 @@ fn main() {
     println!("Hello, world!");
 }
 
-pub fn confusion_matrix(matrix: Vec<Vec<isize>>, top_char: &str, left_char: &str) {}
-
 pub fn levenshtein(
     left: &str,
     top: &str,
