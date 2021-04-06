@@ -24,16 +24,19 @@ mod tests {
     use super::*;
     #[test]
     fn it_works() {
-        let left = "accgtcg";
-        let top = "acgccg";
+        let left = "sitting";
+        let top = "kitten";
         let result = levenshtein(left, top);
 
+        // Top row of labels
         print!("[ ][Ø]");
         for char in top.chars().into_iter() {
             print!("[{}]", char);
         }
         println!();
 
+        // First row with Ø label
+        print!("[Ø]");
         print!("[Ø]");
         for i in 0..result[0].len() {
             print!("[{}]", result[0][i]);
@@ -41,6 +44,7 @@ mod tests {
 
         println!();
 
+        // Remaining lines
         for i in 1..result.len() {
             print!("[{}]", left.chars().nth(i - 1).unwrap());
             for j in 0..result[i].len() {
