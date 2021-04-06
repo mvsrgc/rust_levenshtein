@@ -12,6 +12,8 @@ pub fn levenshtein(
     _sub_cost: isize,
     match_cost: isize,
     use_confusion_matrix: bool,
+    confusion_matrix_chars: Vec<char>,
+    confusion_matrix: Vec<Vec<isize>>,
 ) -> Vec<Vec<isize>> {
     let left_of_table_nb_chars = left.len() + 1;
     let top_of_table_nb_chars = top.len() + 1;
@@ -33,20 +35,12 @@ pub fn levenshtein(
                 sub_cost = match_cost;
             } else {
                 if use_confusion_matrix {
-                    let letters = ['a', 'c', 'g', 't'];
-                    let confusion_matrix: Vec<Vec<isize>> = vec![
-                        vec![1, -1, -2, -1],
-                        vec![-1, 1, -3, -1],
-                        vec![-2, -3, 1, -2],
-                        vec![-1, -1, -2, 1],
-                    ];
-
-                    let left_letter_index = letters
+                    let left_letter_index = confusion_matrix_chars
                         .iter()
                         .position(|&x| x == left.chars().nth(i - 1).unwrap())
                         .unwrap();
 
-                    let top_letter_index = letters
+                    let top_letter_index = confusion_matrix_chars
                         .iter()
                         .position(|&x| x == top.chars().nth(j - 1).unwrap())
                         .unwrap();
@@ -77,8 +71,25 @@ mod tests {
     fn test_levenshtein() {
         let left = "accgtcg";
         let top = "acgccg";
+        let confusion_matrix_chars = vec!['a', 'c', 'g', 't'];
+        let confusion_matrix: Vec<Vec<isize>> = vec![
+            vec![1, -1, -2, -1],
+            vec![-1, 1, -3, -1],
+            vec![-2, -3, 1, -2],
+            vec![-1, -1, -2, 1],
+        ];
 
-        let result = levenshtein(left, top, -4, -4, -1, 1, true);
+        let result = levenshtein(
+            left,
+            top,
+            -4,
+            -4,
+            -1,
+            1,
+            true,
+            confusion_matrix_chars,
+            confusion_matrix,
+        );
 
         // Top row of labels
         print!("[ ][Ø]");
