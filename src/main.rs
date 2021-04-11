@@ -1,7 +1,7 @@
 use std::cmp::{max, min};
 #[macro_use]
 extern crate prettytable;
-use prettytable::{Cell, Row, Table};
+use prettytable::{format, Cell, Row, Table};
 
 fn main() {
     println!("Hello, world!");
@@ -70,6 +70,8 @@ pub fn levenshtein(
 
 #[cfg(test)]
 mod tests {
+    use prettytable::format::{self, TableFormat};
+
     use super::*;
 
     #[test]
