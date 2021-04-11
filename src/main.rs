@@ -76,8 +76,8 @@ mod tests {
 
     #[test]
     fn test_levenshtein() {
-        let left = "acgcttg";
-        let top = "aggctg";
+        let left = "aggc";
+        let top = "agc";
         let confusion_matrix_chars = vec!['a', 'c', 'g', 't'];
         let confusion_matrix: Vec<Vec<isize>> = vec![
             vec![1, -1, -2, -1],
@@ -104,13 +104,13 @@ mod tests {
             vec![" ", "Ø"]
                 .into_iter()
                 .chain(top.split_inclusive(|_| true))
-                .map(|s| Cell::new(s))
+                .map(|s| Cell::new(s).style_spec("c"))
                 .collect(),
         );
 
-        let mut first_row = Row::new(vec![Cell::new("Ø")]);
+        let mut first_row = Row::new(vec![Cell::new("Ø").style_spec("c")]);
         for i in 0..result[0].len() {
-            first_row.add_cell(Cell::new(&result[0][i].to_string()));
+            first_row.add_cell(Cell::new(&result[0][i].to_string()).style_spec("c"));
         }
 
         table.set_titles(title_row);
@@ -118,10 +118,10 @@ mod tests {
 
         for i in 1..result.len() {
             let mut row = Row::new(vec![]);
-            let cell = Cell::new(&left.chars().nth(i - 1).unwrap().to_string());
+            let cell = Cell::new(&left.chars().nth(i - 1).unwrap().to_string()).style_spec("c");
             row.add_cell(cell);
             for j in 0..result[i].len() {
-                let cell = Cell::new(&result[i][j].to_string());
+                let cell = Cell::new(&result[i][j].to_string()).style_spec("c");
                 row.add_cell(cell);
             }
             table.add_row(row);
