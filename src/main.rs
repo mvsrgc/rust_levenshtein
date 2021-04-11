@@ -1,4 +1,7 @@
 use std::cmp::{max, min};
+#[macro_use]
+extern crate prettytable;
+use prettytable::{Cell, Row, Table};
 
 fn main() {
     println!("Hello, world!");
@@ -20,10 +23,12 @@ pub fn levenshtein(
 
     let mut matrix = vec![vec![0; top_of_table_nb_chars]; left_of_table_nb_chars];
 
+    // Populate first column.
     for i in 1..left.len() + 1 {
         matrix[i][0] = i as isize * del_cost;
     }
 
+    // Populate first row.
     for j in 1..top.len() + 1 {
         matrix[0][j] = j as isize * insert_cost;
     }
@@ -69,8 +74,8 @@ mod tests {
 
     #[test]
     fn test_levenshtein() {
-        let left = "accgtcg";
-        let top = "acgccg";
+        let left = "acgcttg";
+        let top = "aggctg";
         let confusion_matrix_chars = vec!['a', 'c', 'g', 't'];
         let confusion_matrix: Vec<Vec<isize>> = vec![
             vec![1, -1, -2, -1],
@@ -82,37 +87,44 @@ mod tests {
         let result = levenshtein(
             left,
             top,
-            -4,
-            -4,
+            -2,
+            -2,
             -1,
             1,
-            true,
+            false,
             confusion_matrix_chars,
             confusion_matrix,
         );
 
-        // Top row of labels
-        print!("[ ][Ø]");
-        for char in top.chars().into_iter() {
-            print!("[{}]", char);
-        }
-        println!();
+        let mut table = Table::new();
 
-        // First row with Ø label
-        print!("[Ø]");
+        let title_row = Row::new(
+            vec![" ", "Ø"]
+                .into_iter()
+                .chain(top.split_inclusive(|_| true))
+                .map(|s| Cell::new(s))
+                .collect(),
+        );
+
+        let mut first_row = Row::new(vec![Cell::new("Ø")]);
         for i in 0..result[0].len() {
-            print!("[{}]", result[0][i]);
+            first_row.add_cell(Cell::new(&result[0][i].to_string()));
         }
 
-        println!();
+        table.set_titles(title_row);
+        table.add_row(first_row);
 
-        // Remaining lines
         for i in 1..result.len() {
-            print!("[{}]", left.chars().nth(i - 1).unwrap());
+            let mut row = Row::new(vec![]);
+            let cell = Cell::new(&left.chars().nth(i - 1).unwrap().to_string());
+            row.add_cell(cell);
             for j in 0..result[i].len() {
-                print!("[{}]", result[i][j])
+                let cell = Cell::new(&result[i][j].to_string());
+                row.add_cell(cell);
             }
-            println!()
+            table.add_row(row);
         }
+
+        table.printstd();
     }
 }
